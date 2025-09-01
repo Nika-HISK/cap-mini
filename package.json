@@ -15,5 +15,15 @@
   },
   "devDependencies": {
     "@sap/cds-dk": "^7"
+  },
+  "cds": {
+    "requires": {
+      "db": {
+        "kind": "sqlite",
+        "credentials": {
+          "url": "db/my.db"
+        }
+      }
+    }
   }
 }
