@@ -1,0 +1,8 @@
+{
+  "requires": {
+    "db": {
+      "kind": "sqlite",
+      "database": "db/my.db"
+    }
+  }
+}

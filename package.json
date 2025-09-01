@@ -1,0 +1,19 @@
+{
+  "name": "cap-mini-bookshop",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Minimal SAP CAP (Node.js) bookshop service with CRUD, actions, and SQLite.",
+  "scripts": {
+    "start": "cds-serve",
+    "watch": "cds watch",
+    "deploy": "cds deploy --to sqlite:db/my.db"
+  },
+  "dependencies": {
+    "@sap/cds": "^7",
+    "express": "^4",
+    "sqlite3": "^5"
+  },
+  "devDependencies": {
+    "@sap/cds-dk": "^7"
+  }
+}
