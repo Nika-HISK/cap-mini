@@ -55,9 +55,3 @@ curl -X DELETE "http://localhost:4004/catalog/Books(ID=d8c3db4c-6a8e-4f9c-a0a2-7
 - The data model uses `managed` aspect, so `createdAt/createdBy/modifiedAt/modifiedBy` are auto-managed by CAP.
 - SQLite configuration is in `.cdsrc.json`. Database file is `db/my.db`.
 - CSV seed data is auto-loaded on deploy from `db/data/my.bookshop-Books.csv`.
-
-## Next Steps
-- Add associations (e.g., Authors entity) and try `$expand`.
-- Add authorization/roles (XSUAA) when deploying to SAP BTP.
-- Switch DB to SAP HANA: bind a HANA service and use `cds deploy --to hana`.
-```
