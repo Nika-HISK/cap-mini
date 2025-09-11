@@ -3,7 +3,6 @@ const cds = require('@sap/cds');
 module.exports = cds.service.impl(async function () {
   const { Books, Categories, Reviews, BookCategories } = this.entities;
 
-  // Enhanced search with filters
   this.on('searchBooks', async (req) => {
     const { q, category, minPrice, maxPrice, minRating, sortBy = 'title', sortOrder = 'asc' } = req.data;
     
@@ -14,7 +13,6 @@ module.exports = cds.service.impl(async function () {
       })
       .where({ isActive: true });
 
-    // Text search
     if (q && q.trim()) {
       const searchTerm = `%${q.trim()}%`;
       query = query.and({
@@ -26,7 +24,6 @@ module.exports = cds.service.impl(async function () {
       });
     }
 
-    // Category filter
     if (category) {
       const bookIds = await cds.run(
         cds.SELECT.from(BookCategories)
@@ -38,7 +35,6 @@ module.exports = cds.service.impl(async function () {
       }
     }
 
-    // Price range filter
     if (minPrice !== undefined) query = query.and({ price: { '>=': minPrice } });
     if (maxPrice !== undefined) query = query.and({ price: { '<=': maxPrice } });
 
