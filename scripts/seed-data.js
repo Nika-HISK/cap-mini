@@ -1,4 +1,3 @@
-// scripts/seed-data.js
 const cds = require('@sap/cds');
 const bcrypt = require('bcryptjs');
 const { v4: uuidv4 } = require('uuid');
@@ -10,7 +9,7 @@ async function seedDatabase() {
     await cds.connect();
     const db = await cds.connect.to('db');
     
-    // Clean existing data (be careful in production!)
+
     console.log('Cleaning existing data...');
     await db.run('DELETE FROM bookshop_Reviews');
     await db.run('DELETE FROM bookshop_CartItems');
@@ -27,7 +26,7 @@ async function seedDatabase() {
     await db.run('DELETE FROM bookshop_Users');
     await db.run('DELETE FROM bookshop_Roles');
 
-    // Create Roles
+
     console.log('Creating roles...');
     const adminRoleId = uuidv4();
     const managerRoleId = uuidv4();
@@ -51,7 +50,7 @@ async function seedDatabase() {
       }
     ]));
 
-    // Create Permissions
+
     console.log('Creating permissions...');
     const permissions = [
       { name: 'READ_BOOKS', description: 'Read books', resource: 'Books', action: 'READ' },
@@ -72,7 +71,6 @@ async function seedDatabase() {
       }));
     }
 
-    // Create Users
     console.log('Creating users...');
     const adminPassword = await bcrypt.hash('admin123', 10);
     const managerPassword = await bcrypt.hash('manager123', 10);
@@ -115,7 +113,6 @@ async function seedDatabase() {
       }
     ]));
 
-    // Create Categories
     console.log('Creating categories...');
     const categories = [
       { name: 'Programming', description: 'Programming and software development books' },
@@ -138,7 +135,6 @@ async function seedDatabase() {
       }));
     }
 
-    // Create Publishers
     console.log('Creating publishers...');
     const publishers = [
       { 
@@ -183,7 +179,6 @@ async function seedDatabase() {
       }));
     }
 
-    // Create Books
     console.log('Creating books...');
     const books = [
       {
@@ -369,7 +364,6 @@ async function seedDatabase() {
         ...bookData
       }));
 
-      // Create book-category relationships
       for (const categoryName of categories) {
         const categoryId = categoryIds[categoryName];
         if (categoryId) {
@@ -382,7 +376,7 @@ async function seedDatabase() {
       }
     }
 
-    // Create sample addresses
+
     console.log('Creating sample addresses...');
     const customerAddressId = uuidv4();
     await db.run(cds.INSERT.into('bookshop.Addresses').entries({
@@ -397,7 +391,6 @@ async function seedDatabase() {
       isDefault: true
     }));
 
-    // Create sample reviews
     console.log('Creating sample reviews...');
     const reviewsData = [
       {
@@ -439,7 +432,6 @@ async function seedDatabase() {
       }
     }
 
-    // Update book ratings
     console.log('Updating book ratings...');
     for (const [bookTitle, bookId] of Object.entries(bookIds)) {
       const stats = await db.run(
@@ -460,7 +452,6 @@ async function seedDatabase() {
       }
     }
 
-    // Create sample cart items
     console.log('Adding items to customer cart...');
     await db.run(cds.INSERT.into('bookshop.CartItems').entries([
       {
@@ -496,7 +487,6 @@ async function seedDatabase() {
   }
 }
 
-// Run the seeding
 if (require.main === module) {
   seedDatabase();
 }
