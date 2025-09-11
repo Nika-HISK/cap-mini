@@ -53,14 +53,14 @@ async function setupPostgreSQL() {
       `);
       console.log('✓ Created database: bookshop_dev');
     } catch (error) {
-      if (error.code === '42P04') { // Database already exists
+      if (error.code === '42P04') {
         console.log('✓ Database bookshop_dev already exists');
       } else {
         throw error;
       }
     }
 
-    // Grant necessary privileges
+
     await superClient.query(`
       GRANT ALL PRIVILEGES ON DATABASE bookshop TO bookshop_user;
       GRANT ALL PRIVILEGES ON DATABASE bookshop_dev TO bookshop_user;
@@ -69,7 +69,6 @@ async function setupPostgreSQL() {
 
     await superClient.end();
 
-    // Test connection with the new user
     const testClient = new Client({
       host: 'localhost',
       port: 5432,
@@ -81,7 +80,7 @@ async function setupPostgreSQL() {
     await testClient.connect();
     console.log('✓ Successfully connected with bookshop_user');
     
-    // Create extensions if needed
+
     try {
       await testClient.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');
       console.log('✓ Enabled uuid-ossp extension');
@@ -108,7 +107,6 @@ async function setupPostgreSQL() {
   }
 }
 
-// Run the setup
 if (require.main === module) {
   setupPostgreSQL();
 }
