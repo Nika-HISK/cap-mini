@@ -1,8 +1,67 @@
 {
+  "build": {
+    "target": ".",
+    "tasks": [
+      {
+        "for": "nodejs",
+        "dest": "../"
+      }
+    ]
+  },
   "requires": {
     "db": {
-      "kind": "sqlite",
-      "database": "db/my.db"
+      "[production]": {
+        "kind": "postgres",
+        "credentials": {
+          "host": "${env:DB_HOST}",
+          "port": "${env:DB_PORT}",
+          "database": "${env:PROD_DB_NAME}",
+          "user": "${env:DB_USER}",
+          "password": "${env:PROD_DB_PASSWORD}"
+        }
+      },
+      "[development]": {
+        "kind": "postgres", 
+        "credentials": {
+          "host": "${env:DB_HOST}",
+          "port": "${env:DB_PORT}",
+          "database": "${env:DB_NAME}",
+          "user": "${env:DB_USER}",
+          "password": "${env:DB_PASSWORD}"
+        }
+      },
+      "[test]": {
+        "kind": "sqlite",
+        "credentials": {
+          "url": ":memory:"
+        }
+      }
+    },
+    "auth": {
+      "[production]": {
+        "kind": "jwt",
+        "strategy": "mock"
+      },
+      "[development]": {
+        "kind": "jwt", 
+        "strategy": "mock"
+      }
     }
+  },
+  "features": {
+    "fetch_csrf": true,
+    "serve_on_root": true,
+    "kibana_formatter": true,
+    "assert_integrity": "db"
+  },
+  "i18n": {
+    "default_language": "en",
+    "folders": ["_i18n", "i18n", "assets/i18n"]
+  },
+  "log": {
+    "service": true
+  },
+  "odata": {
+    "version": "v4"
   }
 }

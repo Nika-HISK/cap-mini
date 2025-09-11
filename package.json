@@ -9,8 +9,10 @@
     "deploy": "cds deploy --to sqlite:db/my.db"
   },
   "dependencies": {
+    "@cap-js/postgres": "^1.14.2",
     "@sap/cds": "^7",
     "express": "^4",
+    "pg": "^8.16.3",
     "sqlite3": "^5"
   },
   "devDependencies": {
