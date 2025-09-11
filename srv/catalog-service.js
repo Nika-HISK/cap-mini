@@ -38,10 +38,10 @@ module.exports = cds.service.impl(async function () {
     if (minPrice !== undefined) query = query.and({ price: { '>=': minPrice } });
     if (maxPrice !== undefined) query = query.and({ price: { '<=': maxPrice } });
 
-    // Rating filter
+
     if (minRating !== undefined) query = query.and({ averageRating: { '>=': minRating } });
 
-    // Sorting
+
     const validSortFields = ['title', 'price', 'averageRating', 'createdAt'];
     const sortField = validSortFields.includes(sortBy) ? sortBy : 'title';
     const order = sortOrder.toLowerCase() === 'desc' ? 'desc' : 'asc';
@@ -54,7 +54,7 @@ module.exports = cds.service.impl(async function () {
 
     const books = await cds.run(query);
 
-    // Get categories for each book
+
     for (const book of books) {
       const bookCategories = await cds.run(
         cds.SELECT.from(BookCategories)
@@ -67,11 +67,10 @@ module.exports = cds.service.impl(async function () {
     return books;
   });
 
-  // Get recommendations based on category and rating
+
   this.on('getRecommendations', async (req) => {
     const { bookId, limit = 5 } = req.data;
 
-    // Get the source book's categories
     const bookCategories = await cds.run(
       cds.SELECT.from(BookCategories)
         .where({ book_ID: bookId })
@@ -81,7 +80,7 @@ module.exports = cds.service.impl(async function () {
 
     const categoryIds = bookCategories.map(bc => bc.category_ID);
 
-    // Find similar books
+
     const similarBookIds = await cds.run(
       cds.SELECT.from(BookCategories)
         .columns('book_ID')
@@ -111,7 +110,7 @@ module.exports = cds.service.impl(async function () {
     return recommendations;
   });
 
-  // Get featured books
+
   this.on('getFeaturedBooks', async (req) => {
     const { limit = 10 } = req.data;
 
@@ -131,12 +130,12 @@ module.exports = cds.service.impl(async function () {
     );
   });
 
-  // Get books by category with pagination
+
   this.on('getBooksByCategory', async (req) => {
     const { categoryId, page = 1, pageSize = 12 } = req.data;
     const offset = (page - 1) * pageSize;
 
-    // Get book IDs for the category
+
     const bookCategories = await cds.run(
       cds.SELECT.from(BookCategories)
         .columns('book_ID')
@@ -149,7 +148,7 @@ module.exports = cds.service.impl(async function () {
 
     const bookIds = bookCategories.map(bc => bc.book_ID);
 
-    // Get total count
+
     const totalCount = await cds.run(
       cds.SELECT.from(Books)
         .columns('count(*) as count')
@@ -159,7 +158,6 @@ module.exports = cds.service.impl(async function () {
         })
     );
 
-    // Get books with pagination
     const books = await cds.run(
       cds.SELECT.from(Books)
         .columns(b => {
@@ -184,13 +182,11 @@ module.exports = cds.service.impl(async function () {
     };
   });
 
-  // Before reading books, increment view count (for analytics)
   this.after('READ', 'Books', async (books, req) => {
     if (!Array.isArray(books)) books = [books];
     
-    // Could implement view tracking here
+
     for (const book of books.filter(Boolean)) {
-      // Track book views for analytics
       console.log(`Book viewed: ${book.title} (${book.ID})`);
     }
   });
