@@ -1,4 +1,3 @@
-// scripts/setup-postgres.js
 const { Client } = require('pg');
 const dotenv = require('dotenv');
 dotenv.config();
@@ -6,12 +5,12 @@ dotenv.config();
 async function setupPostgreSQL() {
   console.log('Setting up PostgreSQL database for CAP Bookshop...\n');
   
-  // First, connect as superuser to create database and user
+
   const superClient = new Client({
     host: 'localhost',
     port: 5432,
-    database: 'postgres', // Connect to default postgres db
-    user: 'postgres', // Default superuser
+    database: 'postgres', 
+    user: 'postgres',
     password: process.env.POSTGRES_ADMIN_PASSWORD || 'postgres'
   });
 
@@ -19,35 +18,35 @@ async function setupPostgreSQL() {
     await superClient.connect();
     console.log('Connected to PostgreSQL as superuser');
 
-    // Create user
+
     try {
       await superClient.query(`
         CREATE USER bookshop_user WITH PASSWORD 'your_password';
       `);
       console.log('✓ Created user: bookshop_user');
     } catch (error) {
-      if (error.code === '42710') { // User already exists
+      if (error.code === '42710') {
         console.log('✓ User bookshop_user already exists');
       } else {
         throw error;
       }
     }
 
-    // Create production database
+
     try {
       await superClient.query(`
         CREATE DATABASE bookshop OWNER bookshop_user;
       `);
       console.log('✓ Created database: bookshop');
     } catch (error) {
-      if (error.code === '42P04') { // Database already exists
+      if (error.code === '42P04') {
         console.log('✓ Database bookshop already exists');
       } else {
         throw error;
       }
     }
 
-    // Create development database
+
     try {
       await superClient.query(`
         CREATE DATABASE bookshop_dev OWNER bookshop_user;
