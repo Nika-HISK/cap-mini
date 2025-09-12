@@ -85,7 +85,7 @@ service UserService @(path: '/users') @(requires: 'authenticated-user') {
   entity OrderItems as projection on db.OrderItems;
   entity Reviews as projection on db.Reviews;
   
-  // Authentication actions
+
   type LoginRequest {
     username: String;
     password: String;
@@ -126,7 +126,7 @@ service UserService @(path: '/users') @(requires: 'authenticated-user') {
   action addToWishlist(bookId: UUID) returns Boolean;
   action removeFromWishlist(itemId: UUID) returns Boolean;
   
-  // Order management
+
   type CheckoutRequest {
     billingAddressId: UUID;
     shippingAddressId: UUID;
@@ -143,7 +143,7 @@ service UserService @(path: '/users') @(requires: 'authenticated-user') {
   
   action cancelOrder(orderId: UUID) returns Boolean;
   
-  // Review management
+
   action submitReview(
     bookId: UUID,
     rating: Integer,
@@ -159,8 +159,7 @@ service UserService @(path: '/users') @(requires: 'authenticated-user') {
   ) returns Boolean;
   
   action deleteReview(reviewId: UUID) returns Boolean;
-  
-  // User profile
+
   function getProfile() returns Users;
   function getOrderHistory(page: Integer, pageSize: Integer) returns {
     orders: array of Orders;
@@ -168,7 +167,7 @@ service UserService @(path: '/users') @(requires: 'authenticated-user') {
   };
 }
 
-// Admin Service
+
 service AdminService @(path: '/admin') @(requires: 'admin') {
   
   entity Books as projection on db.Books;
@@ -180,22 +179,21 @@ service AdminService @(path: '/admin') @(requires: 'admin') {
   entity InventoryLogs as projection on db.InventoryLogs;
   entity Suppliers as projection on db.Suppliers;
   entity PurchaseOrders as projection on db.PurchaseOrders;
-  
-  // Inventory management
+
   action restockBook(bookId: UUID, quantity: Integer, reason: String) returns Boolean;
   action adjustInventory(bookId: UUID, newStock: Integer, reason: String) returns Boolean;
   action setReorderPoint(bookId: UUID, reorderPoint: Integer) returns Boolean;
   
-  // Order management
+
   action updateOrderStatus(orderId: UUID, status: String) returns Boolean;
   action processRefund(orderId: UUID, amount: Decimal(10,2), reason: String) returns Boolean;
   
-  // User management
+
   action deactivateUser(userId: UUID) returns Boolean;
   action activateUser(userId: UUID) returns Boolean;
   action changeUserRole(userId: UUID, roleId: UUID) returns Boolean;
   
-  // Review moderation
+
   action approveReview(reviewId: UUID) returns Boolean;
   action rejectReview(reviewId: UUID) returns Boolean;
   
