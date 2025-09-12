@@ -1,6 +1,6 @@
 using bookshop as db from '../db/schema';
 
-// Public Catalog Service
+
 service CatalogService @(path: '/catalog') {
   
   @readonly entity Books as projection on db.Books {
@@ -62,7 +62,7 @@ service CatalogService @(path: '/catalog') {
   // Get featured books
   function getFeaturedBooks(limit: Integer) returns array of BookSearchResult;
   
-  // Get books by category with pagination
+
   function getBooksByCategory(
     categoryId: UUID,
     page: Integer,
@@ -74,7 +74,7 @@ service CatalogService @(path: '/catalog') {
   };
 }
 
-// User Management Service
+
 service UserService @(path: '/users') @(requires: 'authenticated-user') {
   
   entity Users as projection on db.Users;
