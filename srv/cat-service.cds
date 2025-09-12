@@ -197,7 +197,7 @@ service AdminService @(path: '/admin') @(requires: 'admin') {
   action approveReview(reviewId: UUID) returns Boolean;
   action rejectReview(reviewId: UUID) returns Boolean;
   
-  // Analytics functions
+
   function getSalesReport(
     startDate: Date,
     endDate: Date,
@@ -246,18 +246,16 @@ service AdminService @(path: '/admin') @(requires: 'admin') {
   };
 }
 
-// Notifications Service
 service NotificationService @(path: '/notifications') {
   
-  // Stock alerts
+
   action sendLowStockAlert(bookId: UUID) returns Boolean;
-  
-  // Order notifications
+
   action sendOrderConfirmation(orderId: UUID) returns Boolean;
   action sendShippingNotification(orderId: UUID) returns Boolean;
   action sendDeliveryNotification(orderId: UUID) returns Boolean;
   
-  // User notifications
+
   action sendWelcomeEmail(userId: UUID) returns Boolean;
   action sendPasswordResetEmail(email: String) returns Boolean;
 }
