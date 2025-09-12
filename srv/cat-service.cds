@@ -34,7 +34,7 @@ service CatalogService @(path: '/catalog') {
     ID, username, firstName, lastName
   };
 
-  // Search function with enhanced capabilities
+
   type BookSearchResult {
     ID: UUID;
     title: String;
@@ -56,10 +56,10 @@ service CatalogService @(path: '/catalog') {
     sortOrder: String // 'asc', 'desc'
   ) returns array of BookSearchResult;
   
-  // Get book recommendations
+
   function getRecommendations(bookId: UUID, limit: Integer) returns array of BookSearchResult;
   
-  // Get featured books
+
   function getFeaturedBooks(limit: Integer) returns array of BookSearchResult;
   
 
@@ -117,14 +117,12 @@ service UserService @(path: '/users') @(requires: 'authenticated-user') {
   action register(request: RegisterRequest) returns LoginResponse;
   action logout() returns Boolean;
   action changePassword(currentPassword: String, newPassword: String) returns Boolean;
-  
-  // Cart management
+
   action addToCart(bookId: UUID, quantity: Integer) returns Boolean;
   action updateCartItem(itemId: UUID, quantity: Integer) returns Boolean;
   action removeFromCart(itemId: UUID) returns Boolean;
   action clearCart() returns Boolean;
-  
-  // Wishlist management
+
   action addToWishlist(bookId: UUID) returns Boolean;
   action removeFromWishlist(itemId: UUID) returns Boolean;
   
