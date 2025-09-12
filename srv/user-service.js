@@ -1,4 +1,3 @@
-// srv/user-service.js
 const cds = require('@sap/cds');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -10,9 +9,9 @@ module.exports = cds.service.impl(async function () {
     Reviews, Books, Addresses, Payments 
   } = this.entities;
 
-  // Authentication middleware
+
   this.before('*', async (req) => {
-    // Skip authentication for login/register actions
+
     if (['login', 'register'].includes(req.event)) return;
 
     const authHeader = req.headers.authorization;
@@ -24,8 +23,7 @@ module.exports = cds.service.impl(async function () {
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret');
       req.user = decoded;
-      
-      // Verify user still exists and is active
+
       const user = await cds.run(
         cds.SELECT.one.from(Users)
           .columns('ID', 'username', 'isActive', 'role_ID')
@@ -42,11 +40,10 @@ module.exports = cds.service.impl(async function () {
     }
   });
 
-  // User registration
+
   this.on('register', async (req) => {
     const { username, email, password, firstName, lastName } = req.data.request;
 
-    // Validation
     if (!username || !email || !password) {
       return {
         success: false,
