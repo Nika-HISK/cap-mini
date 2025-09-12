@@ -232,7 +232,6 @@ module.exports = cds.service.impl(async function () {
         return req.error(400, `Only ${book.stock} items available in stock`);
       }
 
-      // Check if item already in cart
       const existingItem = await cds.run(
         cds.SELECT.one.from(CartItems)
           .where({ user_ID: userId, book_ID: bookId })
@@ -272,10 +271,8 @@ module.exports = cds.service.impl(async function () {
     const userId = req.user.userId;
 
     try {
-      // Start transaction
       const tx = cds.transaction(req);
 
-      // Get cart items
       const cartItems = await tx.run(
         cds.SELECT.from(CartItems)
           .columns(ci => {
@@ -289,7 +286,6 @@ module.exports = cds.service.impl(async function () {
         return req.error(400, 'Cart is empty');
       }
 
-      // Validate stock and calculate total
       let subtotal = 0;
       for (const item of cartItems) {
         if (item.book.stock < item.quantity) {
@@ -298,16 +294,13 @@ module.exports = cds.service.impl(async function () {
         subtotal += item.book.price * item.quantity;
       }
 
-      // Calculate tax and shipping (simplified)
-      const taxRate = 0.08; // 8% tax
+      const taxRate = 0.08; 
       const tax = subtotal * taxRate;
-      const shippingCost = subtotal > 50 ? 0 : 9.99; // Free shipping over $50
+      const shippingCost = subtotal > 50 ? 0 : 9.99; 
       const totalAmount = subtotal + tax + shippingCost;
 
-      // Generate order number
       const orderNumber = `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 5).toUpperCase()}`;
 
-      // Create order
       const orderId = uuidv4();
       await tx.run(
         cds.INSERT.into(Orders).entries({
@@ -325,9 +318,7 @@ module.exports = cds.service.impl(async function () {
         })
       );
 
-      // Create order items and update book stock
       for (const item of cartItems) {
-        // Create order item
         await tx.run(
           cds.INSERT.into(OrderItems).entries({
             ID: uuidv4(),
@@ -338,16 +329,12 @@ module.exports = cds.service.impl(async function () {
             totalPrice: item.book.price * item.quantity
           })
         );
-
-        // Update book stock
         await tx.run(
           cds.UPDATE(Books)
             .set({ stock: item.book.stock - item.quantity })
             .where({ ID: item.book.ID })
         );
       }
-
-      // Create payment record
       await tx.run(
         cds.INSERT.into(Payments).entries({
           ID: uuidv4(),
@@ -357,8 +344,6 @@ module.exports = cds.service.impl(async function () {
           amount: totalAmount
         })
       );
-
-      // Clear cart
       await tx.run(
         cds.DELETE.from(CartItems).where({ user_ID: userId })
       );
@@ -378,13 +363,11 @@ module.exports = cds.service.impl(async function () {
     }
   });
 
-  // Submit review
   this.on('submitReview', async (req) => {
     const { bookId, rating, title, comment } = req.data;
     const userId = req.user.userId;
 
     try {
-      // Check if user has purchased this book
       const hasOrdered = await cds.run(
         cds.SELECT.one
           .from(OrderItems, 'oi')
@@ -396,8 +379,6 @@ module.exports = cds.service.impl(async function () {
             'o.status': { in: ['delivered', 'completed'] }
           })
       );
-
-      // Check if user already reviewed this book
       const existingReview = await cds.run(
         cds.SELECT.one.from(Reviews)
           .where({ user_ID: userId, book_ID: bookId })
@@ -407,7 +388,6 @@ module.exports = cds.service.impl(async function () {
         return req.error(400, 'You have already reviewed this book');
       }
 
-      // Create review
       await cds.run(
         cds.INSERT.into(Reviews).entries({
           ID: uuidv4(),
@@ -417,11 +397,10 @@ module.exports = cds.service.impl(async function () {
           title: title || '',
           comment: comment || '',
           isVerifiedPurchase: !!hasOrdered,
-          isApproved: false // Requires admin approval
+          isApproved: false 
         })
       );
 
-      // Update book average rating
       await this.updateBookRating(bookId);
 
       return true;
@@ -431,7 +410,6 @@ module.exports = cds.service.impl(async function () {
     }
   });
 
-  // Helper function to update book average rating
   this.updateBookRating = async (bookId) => {
     const stats = await cds.run(
       cds.SELECT.from(Reviews)
@@ -451,28 +429,26 @@ module.exports = cds.service.impl(async function () {
     }
   };
 
-  // Secure user data access
   this.before(['READ', 'EDIT'], 'Users', (req) => {
     const userId = req.user.userId;
     const userRole = req.user.role;
     
-    // Users can only access their own data, unless they're admin
     if (userRole !== 'Admin') {
       req.query.where({ ID: userId });
     }
   });
 
-  // Secure cart access
+
   this.before(['READ', 'EDIT'], 'CartItems', (req) => {
     req.query.where({ user_ID: req.user.userId });
   });
 
-  // Secure wishlist access
+
   this.before(['READ', 'EDIT'], 'WishlistItems', (req) => {
     req.query.where({ user_ID: req.user.userId });
   });
 
-  // Secure orders access
+
   this.before(['READ'], 'Orders', (req) => {
     if (req.user.role !== 'Admin') {
       req.query.where({ customer_ID: req.user.userId });
