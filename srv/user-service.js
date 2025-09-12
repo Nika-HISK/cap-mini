@@ -59,7 +59,7 @@ module.exports = cds.service.impl(async function () {
     }
 
     try {
-      // Check if user already exists
+
       const existingUser = await cds.run(
         cds.SELECT.one.from(Users)
           .where({ or: [{ username }, { email }] })
@@ -72,12 +72,11 @@ module.exports = cds.service.impl(async function () {
         };
       }
 
-      // Get default role (Customer)
+
       let customerRole = await cds.run(
         cds.SELECT.one.from(Roles).where({ name: 'Customer' })
       );
 
-      // Create default role if it doesn't exist
       if (!customerRole) {
         customerRole = await cds.run(
           cds.INSERT.into(Roles).entries({
@@ -89,10 +88,10 @@ module.exports = cds.service.impl(async function () {
         customerRole = { ID: customerRole.ID };
       }
 
-      // Hash password
+
       const passwordHash = await bcrypt.hash(password, 10);
 
-      // Create user
+
       const userId = uuidv4();
       await cds.run(
         cds.INSERT.into(Users).entries({
@@ -107,7 +106,6 @@ module.exports = cds.service.impl(async function () {
         })
       );
 
-      // Generate JWT token
       const token = jwt.sign(
         { userId, username, role: 'Customer' },
         process.env.JWT_SECRET || 'fallback-secret',
@@ -137,7 +135,6 @@ module.exports = cds.service.impl(async function () {
     }
   });
 
-  // User login
   this.on('login', async (req) => {
     const { username, password } = req.data.request;
 
@@ -149,7 +146,6 @@ module.exports = cds.service.impl(async function () {
     }
 
     try {
-      // Find user with role information
       const user = await cds.run(
         cds.SELECT.one.from(Users)
           .columns(u => {
@@ -170,7 +166,6 @@ module.exports = cds.service.impl(async function () {
         };
       }
 
-      // Verify password
       const isValidPassword = await bcrypt.compare(password, user.passwordHash);
       if (!isValidPassword) {
         return {
@@ -179,14 +174,12 @@ module.exports = cds.service.impl(async function () {
         };
       }
 
-      // Update last login
       await cds.run(
         cds.UPDATE(Users)
           .set({ lastLogin: new Date() })
           .where({ ID: user.ID })
       );
 
-      // Generate JWT token
       const token = jwt.sign(
         { 
           userId: user.ID, 
@@ -220,13 +213,11 @@ module.exports = cds.service.impl(async function () {
     }
   });
 
-  // Add to cart
   this.on('addToCart', async (req) => {
     const { bookId, quantity = 1 } = req.data;
     const userId = req.user.userId;
 
     try {
-      // Check if book exists and has stock
       const book = await cds.run(
         cds.SELECT.one.from(Books)
           .columns('ID', 'title', 'stock', 'isActive')
@@ -248,7 +239,6 @@ module.exports = cds.service.impl(async function () {
       );
 
       if (existingItem) {
-        // Update quantity
         const newQuantity = existingItem.quantity + quantity;
         if (newQuantity > book.stock) {
           return req.error(400, `Cannot add more items. Only ${book.stock} available.`);
@@ -260,7 +250,6 @@ module.exports = cds.service.impl(async function () {
             .where({ ID: existingItem.ID })
         );
       } else {
-        // Add new item
         await cds.run(
           cds.INSERT.into(CartItems).entries({
             ID: uuidv4(),
@@ -278,7 +267,6 @@ module.exports = cds.service.impl(async function () {
     }
   });
 
-  // Checkout process
   this.on('checkout', async (req) => {
     const { billingAddressId, shippingAddressId, paymentMethod, notes } = req.data.request;
     const userId = req.user.userId;
