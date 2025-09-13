@@ -468,13 +468,13 @@ async function seedDatabase() {
       }
     ]));
 
-    console.log('\n✅ Database seeded successfully!');
+    console.log('\nDatabase seeded successfully!');
     console.log('\nSample Users Created:');
-    console.log('👤 Admin: username="admin", password="admin123"');
-    console.log('👤 Manager: username="manager", password="manager123"');
-    console.log('👤 Customer: username="customer", password="customer123"');
+    console.log('Admin: username="admin", password="admin123"');
+    console.log('Manager: username="manager", password="manager123"');
+    console.log('Customer: username="customer", password="customer123"');
     console.log('\nSample Data:');
-    console.log(`📚 ${books.length} books across ${categories.length} categories`);
+    console.log(`${books.length} books across ${categories.length} categories`);
     console.log(`🏢 ${publishers.length} publishers`);
     console.log(`⭐ ${reviewsData.length} sample reviews`);
     console.log(`🛒 Sample cart items for customer`);
