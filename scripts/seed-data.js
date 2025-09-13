@@ -475,9 +475,9 @@ async function seedDatabase() {
     console.log('Customer: username="customer", password="customer123"');
     console.log('\nSample Data:');
     console.log(`${books.length} books across ${categories.length} categories`);
-    console.log(`🏢 ${publishers.length} publishers`);
-    console.log(`⭐ ${reviewsData.length} sample reviews`);
-    console.log(`🛒 Sample cart items for customer`);
+    console.log(`${publishers.length} publishers`);
+    console.log(`${reviewsData.length} sample reviews`);
+    console.log(`Sample cart items for customer`);
 
   } catch (error) {
     console.error('❌ Seeding failed:', error);
