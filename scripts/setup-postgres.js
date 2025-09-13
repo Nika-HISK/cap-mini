@@ -98,7 +98,7 @@ async function setupPostgreSQL() {
     console.log('4. Run: npm run watch');
 
   } catch (error) {
-    console.error('❌ Setup failed:', error.message);
+    console.error('Setup failed:', error.message);
     console.error('\nTroubleshooting:');
     console.error('1. Make sure PostgreSQL is running');
     console.error('2. Check if you can connect as postgres user');
