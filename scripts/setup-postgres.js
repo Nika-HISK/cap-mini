@@ -46,7 +46,6 @@ async function setupPostgreSQL() {
       `);
     } catch (error) {
       if (error.code === '42P04') {
-        console.log('✓ Database bookshop_dev already exists');
       } else {
         throw error;
       }
@@ -57,7 +56,6 @@ async function setupPostgreSQL() {
       GRANT ALL PRIVILEGES ON DATABASE bookshop TO bookshop_user;
       GRANT ALL PRIVILEGES ON DATABASE bookshop_dev TO bookshop_user;
     `);
-    console.log('✓ Granted privileges to bookshop_user');
 
     await superClient.end();
 
@@ -70,14 +68,11 @@ async function setupPostgreSQL() {
     });
 
     await testClient.connect();
-    console.log('✓ Successfully connected with bookshop_user');
     
 
     try {
       await testClient.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');
-      console.log('✓ Enabled uuid-ossp extension');
     } catch (error) {
-      console.log('⚠ Could not enable uuid-ossp extension:', error.message);
     }
 
     await testClient.end();
