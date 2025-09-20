@@ -3,14 +3,12 @@ const bcrypt = require('bcryptjs');
 const { v4: uuidv4 } = require('uuid');
 
 async function seedDatabase() {
-  console.log('Seeding database with sample data...\n');
   
   try {
     await cds.connect();
     const db = await cds.connect.to('db');
     
 
-    console.log('Cleaning existing data...');
     await db.run('DELETE FROM bookshop_Reviews');
     await db.run('DELETE FROM bookshop_CartItems');
     await db.run('DELETE FROM bookshop_WishlistItems');
@@ -51,7 +49,6 @@ async function seedDatabase() {
     ]));
 
 
-    console.log('Creating permissions...');
     const permissions = [
       { name: 'READ_BOOKS', description: 'Read books', resource: 'Books', action: 'READ' },
       { name: 'WRITE_BOOKS', description: 'Create/Update books', resource: 'Books', action: 'WRITE' },
@@ -71,7 +68,6 @@ async function seedDatabase() {
       }));
     }
 
-    console.log('Creating users...');
     const adminPassword = await bcrypt.hash('admin123', 10);
     const managerPassword = await bcrypt.hash('manager123', 10);
     const customerPassword = await bcrypt.hash('customer123', 10);
@@ -113,7 +109,6 @@ async function seedDatabase() {
       }
     ]));
 
-    console.log('Creating categories...');
     const categories = [
       { name: 'Programming', description: 'Programming and software development books' },
       { name: 'Web Development', description: 'Frontend and backend web development' },
@@ -179,7 +174,6 @@ async function seedDatabase() {
       }));
     }
 
-    console.log('Creating books...');
     const books = [
       {
         title: 'Clean Code: A Handbook of Agile Software Craftsmanship',
@@ -377,7 +371,6 @@ async function seedDatabase() {
     }
 
 
-    console.log('Creating sample addresses...');
     const customerAddressId = uuidv4();
     await db.run(cds.INSERT.into('bookshop.Addresses').entries({
       ID: customerAddressId,
@@ -391,7 +384,6 @@ async function seedDatabase() {
       isDefault: true
     }));
 
-    console.log('Creating sample reviews...');
     const reviewsData = [
       {
         book: 'Clean Code: A Handbook of Agile Software Craftsmanship',
@@ -432,7 +424,6 @@ async function seedDatabase() {
       }
     }
 
-    console.log('Updating book ratings...');
     for (const [bookTitle, bookId] of Object.entries(bookIds)) {
       const stats = await db.run(
         cds.SELECT.from('bookshop.Reviews')
@@ -452,7 +443,6 @@ async function seedDatabase() {
       }
     }
 
-    console.log('Adding items to customer cart...');
     await db.run(cds.INSERT.into('bookshop.CartItems').entries([
       {
         ID: uuidv4(),
@@ -468,19 +458,8 @@ async function seedDatabase() {
       }
     ]));
 
-    console.log('\nDatabase seeded successfully!');
-    console.log('\nSample Users Created:');
-    console.log('Admin: username="admin", password="admin123"');
-    console.log('Manager: username="manager", password="manager123"');
-    console.log('Customer: username="customer", password="customer123"');
-    console.log('\nSample Data:');
-    console.log(`${books.length} books across ${categories.length} categories`);
-    console.log(`${publishers.length} publishers`);
-    console.log(`${reviewsData.length} sample reviews`);
-    console.log(`Sample cart items for customer`);
 
   } catch (error) {
-    console.error('❌ Seeding failed:', error);
     process.exit(1);
   } finally {
     await cds.disconnect();
