@@ -3,8 +3,6 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 async function setupPostgreSQL() {
-  console.log('Setting up PostgreSQL database for CAP Bookshop...\n');
-  
 
   const superClient = new Client({
     host: 'localhost',
