@@ -16,16 +16,12 @@ async function setupPostgreSQL() {
 
   try {
     await superClient.connect();
-    console.log('Connected to PostgreSQL as superuser');
-
-
     try {
       await superClient.query(`
         CREATE USER bookshop_user WITH PASSWORD 'your_password';
       `);
     } catch (error) {
       if (error.code === '42710') {
-        console.log('✓ User bookshop_user already exists');
       } else {
         throw error;
       }
@@ -36,10 +32,8 @@ async function setupPostgreSQL() {
       await superClient.query(`
         CREATE DATABASE bookshop OWNER bookshop_user;
       `);
-      console.log('✓ Created database: bookshop');
     } catch (error) {
       if (error.code === '42P04') {
-        console.log('✓ Database bookshop already exists');
       } else {
         throw error;
       }
@@ -50,7 +44,6 @@ async function setupPostgreSQL() {
       await superClient.query(`
         CREATE DATABASE bookshop_dev OWNER bookshop_user;
       `);
-      console.log('✓ Created database: bookshop_dev');
     } catch (error) {
       if (error.code === '42P04') {
         console.log('✓ Database bookshop_dev already exists');
