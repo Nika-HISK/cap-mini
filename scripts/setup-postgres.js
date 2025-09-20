@@ -23,7 +23,6 @@ async function setupPostgreSQL() {
       await superClient.query(`
         CREATE USER bookshop_user WITH PASSWORD 'your_password';
       `);
-      console.log('✓ Created user: bookshop_user');
     } catch (error) {
       if (error.code === '42710') {
         console.log('✓ User bookshop_user already exists');
@@ -90,20 +89,8 @@ async function setupPostgreSQL() {
 
     await testClient.end();
 
-    console.log('\n🎉 PostgreSQL setup completed successfully!');
-    console.log('\nNext steps:');
-    console.log('1. Update your .env file with database credentials');
-    console.log('2. Run: npm run deploy:postgres');
-    console.log('3. Run: npm run seed (to populate with sample data)');
-    console.log('4. Run: npm run watch');
-
   } catch (error) {
     console.error('Setup failed:', error.message);
-    console.error('\nTroubleshooting:');
-    console.error('1. Make sure PostgreSQL is running');
-    console.error('2. Check if you can connect as postgres user');
-    console.error('3. Verify your POSTGRES_ADMIN_PASSWORD environment variable');
-    process.exit(1);
   }
 }
 
