@@ -11,7 +11,7 @@ A minimal SAP CAP project demonstrating CRUD, OData queries, a custom action (`r
 ```bash
 npm install
 npm run deploy         
-npm run watch           # starts the dev server with hot reload
+npm run watch           
 ```
 
 If you have `cds` globally, you can also do:
