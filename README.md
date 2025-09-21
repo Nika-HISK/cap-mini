@@ -10,7 +10,7 @@ A minimal SAP CAP project demonstrating CRUD, OData queries, a custom action (`r
 ## Install & Run
 ```bash
 npm install
-npm run deploy          # creates db/my.db from CDS and loads CSV
+npm run deploy         
 npm run watch           # starts the dev server with hot reload
 ```
 
