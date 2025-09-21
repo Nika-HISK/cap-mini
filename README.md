@@ -5,14 +5,13 @@ A minimal SAP CAP project demonstrating CRUD, OData queries, a custom action (`r
 ## Prerequisites
 - Node.js LTS (>= 18 recommended)
 - npm
-- (Optional but handy) `@sap/cds-dk` installed globally: `npm i -g @sap/cds-dk`
+- `@sap/cds-dk` installed globally: `npm i -g @sap/cds-dk`
 
 ## Install & Run
 ```bash
 npm install
 npm run deploy          # creates db/my.db from CDS and loads CSV
 npm run watch           # starts the dev server with hot reload
-# open http://localhost:4004/catalog/Books
 ```
 
 If you have `cds` globally, you can also do:
